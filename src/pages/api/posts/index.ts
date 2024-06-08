@@ -1,20 +1,29 @@
- // src/pages/api/posts/index.js
-import connectToDatabase from '@/lib/mongodb';
-import Post from '@/models/Post';
+import { NextApiRequest, NextApiResponse } from 'next';
+import dbConnect from '../../../lib/db';
+import Post from '../../../models/Post';
 
-export default async function handler(req, res) {
-  await connectToDatabase();
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  await dbConnect();
 
-  if (req.method === 'GET') {
-    const posts = await Post.find({});
-    res.status(200).json(posts);
-  } else if (req.method === 'POST') {
-    const { title, content, author } = req.body;
-    const newPost = new Post({ title, content, author });
-    await newPost.save();
-    res.status(201).json(newPost);
-  } else {
-    res.setHeader('Allow', ['GET', 'POST']);
-    res.status(405).end(`Method ${req.method} Not Allowed`);
+  switch (req.method) {
+    case 'GET':
+      try {
+        const posts = await Post.find({});
+        res.status(200).json({ success: true, data: posts });
+      } catch (error) {
+        res.status(400).json({ success: false });
+      }
+      break;
+    case 'POST':
+      try {
+        const post = await Post.create(req.body);
+        res.status(201).json({ success: true, data: post });
+      } catch (error) {
+        res.status(400).json({ success: false });
+      }
+      break;
+    default:
+      res.status(400).json({ success: false });
+      break;
   }
 }
