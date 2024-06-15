@@ -21,17 +21,24 @@ const Header: React.FC = () => {
           <Link href="/services">Services</Link>
           <Link href="/contact">Contact</Link>
           <Link href="/blog">Blog</Link>
-          {session ? (
+          {session?.user ? (
             <>
-              <span>{session.user?.email}</span>
+              <span>{session.user.name || session.user.email}</span>
               <button onClick={() => signOut()} className="bg-red-500 px-3 py-1 rounded">
-                Sign Out
+                Log Out
               </button>
             </>
           ) : (
-            <button onClick={() => signIn()} className="bg-green-500 px-3 py-1 rounded">
-              Sign In
-            </button>
+            <>
+              <button onClick={() => signIn()} className="bg-green-500 px-3 py-1 rounded">
+                Sign In
+              </button>
+              <Link href="/auth/signup">
+                <button className="bg-blue-500 px-3 py-1 rounded">
+                  Sign Up
+                </button>
+              </Link>
+            </>
           )}
         </div>
       </nav>

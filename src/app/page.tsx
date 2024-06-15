@@ -1,28 +1,39 @@
-import React from 'react';
+"use client";
+
+import React, { useEffect, useState } from 'react';
 import ClientLayout from './client-layout';
 import PostList from '../components/PostList';
 import { IPost } from '../models/Post';
-import dbConnect from '../lib/db';
-import Post from '../models/Post';
+import { useSession } from 'next-auth/react';
 
-async function fetchPosts(): Promise<IPost[]> {
-  await dbConnect();
-  const result = await Post.find({});
-  const posts = result.map((doc) => {
-    const post = doc.toObject() as IPost;
-    post._id = post._id.toString();
-    return post;
-  });
-  return posts;
-}
+const HomePage = () => {
+  const { data: session } = useSession();
+  const [posts, setPosts] = useState<IPost[]>([]);
 
-const HomePage = async () => {
-  const posts = await fetchPosts();
+  useEffect(() => {
+    const fetchPosts = async () => {
+      const response = await fetch('/api/posts');
+      const data = await response.json();
+      setPosts(data.posts);
+    };
+
+    fetchPosts();
+  }, []);
 
   return (
     <ClientLayout>
       <div className="container mx-auto">
         <h1 className="text-4xl font-bold mb-8 text-center text-gray-800">Welcome to My Blog</h1>
+        {session ? (
+          <div className="text-center mb-4">
+            <h2 className="text-2xl">Hello, {session.user?.name || session.user?.email}!</h2>
+            <p>You are signed in as {session.user?.email}</p>
+          </div>
+        ) : (
+          <div className="text-center mb-4">
+            <p>Please sign in to access more features.</p>
+          </div>
+        )}
         <PostList posts={posts} />
       </div>
     </ClientLayout>

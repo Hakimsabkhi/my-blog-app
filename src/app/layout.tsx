@@ -1,14 +1,14 @@
-import React from 'react';
-import '../styles/globals.css'; // Ensure global styles are imported
+"use client";
 
-const RootLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+import { SessionProvider } from 'next-auth/react';
+import '../styles/globals.css';
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="h-full bg-gray-100">
-      <body className="h-full">
-        {children}
+    <html lang="en">
+      <body>
+        <SessionProvider>{children}</SessionProvider>
       </body>
     </html>
   );
-};
-
-export default RootLayout;
+}

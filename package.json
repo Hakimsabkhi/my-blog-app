@@ -6,12 +6,15 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "create-admin-user": "ts-node -r dotenv/config createAdminUser.ts"
   },
   "dependencies": {
     "@next-auth/mongodb-adapter": "^1.1.3",
+    "@types/next-auth": "^3.15.0",
     "bcryptjs": "^2.4.3",
-    "mongodb": "^5.1.0",
+    "dotenv": "^16.4.5",
+    "mongodb": "^5.9.2",
     "mongoose": "^6.13.0",
     "next": "latest",
     "next-auth": "^4.24.7",
@@ -20,12 +23,15 @@
     "react-dom": "latest"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
     "@types/react": "18.3.3",
     "autoprefixer": "^10.4.19",
     "eslint": "^8.0.0",
     "eslint-config-next": "^14.2.3",
     "postcss": "^8.4.38",
-    "tailwindcss": "^3.4.4"
+    "tailwindcss": "^3.4.4",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.1.6"
   },
   "resolutions": {
     "glob": "10.3.10",
