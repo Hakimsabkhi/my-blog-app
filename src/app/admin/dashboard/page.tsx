@@ -13,6 +13,7 @@ interface User {
 const AdminDashboard = () => {
   const { data: session, status } = useSession();
   const [users, setUsers] = useState<User[]>([]);
+  const [dropdownOpen, setDropdownOpen] = useState<string | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -27,8 +28,7 @@ const AdminDashboard = () => {
   const fetchUsers = async () => {
     const res = await fetch('/api/users');
     const data = await res.json();
-    const filteredUsers = data.users.filter((user: User) => user.role !== 'Admin');
-    setUsers(filteredUsers);
+    setUsers(data.users);
   };
 
   const handleDeleteUser = async (userId: string) => {
@@ -45,6 +45,10 @@ const AdminDashboard = () => {
       body: JSON.stringify({ role: newRole }),
     });
     fetchUsers();
+  };
+
+  const toggleDropdown = (userId: string) => {
+    setDropdownOpen(dropdownOpen === userId ? null : userId);
   };
 
   if (status === 'loading' || !session || !session.user) {
@@ -77,16 +81,17 @@ const AdminDashboard = () => {
               <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
                 {user.role}
               </td>
-              <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500 relative">
+              <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500 relative z-10">
                 <div className="relative inline-block text-left">
                   <div>
                     <button
+                      onClick={() => toggleDropdown(user._id)}
                       className="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none"
                       id="options-menu"
                       aria-haspopup="true"
                       aria-expanded="true"
                     >
-                      Actions
+                      Change Role
                       <svg
                         className="-mr-1 ml-2 h-5 w-5"
                         xmlns="http://www.w3.org/2000/svg"
@@ -102,43 +107,38 @@ const AdminDashboard = () => {
                       </svg>
                     </button>
                   </div>
-                  <div
-                    className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5"
-                    role="menu"
-                    aria-orientation="vertical"
-                    aria-labelledby="options-menu"
-                  >
-                    <div className="py-1" role="none">
-                      <button
-                        onClick={() => handleDeleteUser(user._id)}
-                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                        role="menuitem"
-                      >
-                        Delete
-                      </button>
-                      <button
-                        onClick={() => handleChangeRole(user._id, 'Rédacteur')}
-                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                        role="menuitem"
-                      >
-                        Make Writer
-                      </button>
-                      <button
-                        onClick={() => handleChangeRole(user._id, 'Admin')}
-                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                        role="menuitem"
-                      >
-                        Make Admin
-                      </button>
-                      <button
-                        onClick={() => handleChangeRole(user._id, 'Visitor')}
-                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                        role="menuitem"
-                      >
-                        Make Visitor
-                      </button>
+                  {dropdownOpen === user._id && (
+                    <div
+                      className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50"
+                      role="menu"
+                      aria-orientation="vertical"
+                      aria-labelledby="options-menu"
+                    >
+                      <div className="py-1" role="none">
+                        <button
+                          onClick={() => handleChangeRole(user._id, 'Rédacteur')}
+                          className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                          role="menuitem"
+                        >
+                          Make Writer
+                        </button>
+                        <button
+                          onClick={() => handleChangeRole(user._id, 'Admin')}
+                          className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                          role="menuitem"
+                        >
+                          Make Admin
+                        </button>
+                        <button
+                          onClick={() => handleChangeRole(user._id, 'Visitor')}
+                          className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                          role="menuitem"
+                        >
+                          Make Visitor
+                        </button>
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               </td>
             </tr>

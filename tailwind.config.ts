@@ -1,9 +1,14 @@
-module.exports = {
+import { Config } from 'tailwindcss';
+
+const config: Config = {
   content: [
-    './src/**/*.{js,ts,jsx,tsx}', // Adjust according to your project structure
+    './src/app/**/*.{js,ts,jsx,tsx}',
+    './src/components/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
     extend: {},
   },
   plugins: [],
 };
+
+export default config;

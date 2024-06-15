@@ -6,9 +6,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   await connectToDatabase();
 
   if (req.method === 'GET') {
-    const users = await User.find({});
-    res.status(200).json({ users });
+    try {
+      // Fetch all users excluding those with 'Admin' role
+      const users = await User.find({ role: { $ne: 'Admin' } });
+      res.status(200).json({ success: true, users });
+    } catch (error) {
+      res.status(400).json({ success: false });
+    }
   } else {
-    res.status(405).end();
+    res.status(400).json({ success: false });
   }
 }

@@ -1,55 +1,22 @@
 "use client";
 
 import React from 'react';
-import Link from 'next/link';
-import { useSession, signIn, signOut } from 'next-auth/react';
 
-const ClientLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { data: session } = useSession();
-
+const AboutPage: React.FC = () => {
   return (
-    <div>
-      <header className="bg-blue-600 text-white p-4 shadow-md">
-        <nav className="container mx-auto flex justify-between items-center">
-          <div>
-            <Link href="/" className="text-2xl font-bold">
-              My Blog
-            </Link>
-          </div>
-          <div className="space-x-4">
-            <Link href="/">Home</Link>
-            <Link href="/about">About Us</Link>
-            <Link href="/services">Services</Link>
-            <Link href="/contact">Contact</Link>
-            <Link href="/blog">Blog</Link>
-            {session ? (
-              <>
-                <span>{session.user?.name || session.user?.email}</span>
-                <button onClick={() => signOut()} className="bg-red-500 px-3 py-1 rounded">
-                  Log Out
-                </button>
-              </>
-            ) : (
-              <>
-                <button onClick={() => signIn()} className="bg-green-500 px-3 py-1 rounded">
-                  Sign In
-                </button>
-                <Link href="/auth/signup">
-                  <button className="bg-blue-500 px-3 py-1 rounded">
-                    Sign Up
-                  </button>
-                </Link>
-              </>
-            )}
-          </div>
-        </nav>
-      </header>
-      <main>{children}</main>
-      <footer>
-        <p>© 2023 My Blog. All rights reserved.</p>
-      </footer>
-    </div>
+      <div className="container mx-auto p-8">
+        <h1 className="text-4xl font-bold mb-8 text-center text-gray-800">About Us</h1>
+        <p className="text-lg text-gray-700 mb-4">
+          Welcome to My Blog! We are a group of enthusiastic writers and developers who are passionate about sharing our knowledge and insights with the world. Our mission is to create a platform where we can discuss various topics, share our experiences, and provide valuable information to our readers.
+        </p>
+        <p className="text-lg text-gray-700 mb-4">
+          Our team consists of professionals from different fields, including technology, health, education, and more. We believe that sharing knowledge can make a positive impact on society, and we strive to deliver high-quality content that is both informative and engaging.
+        </p>
+        <p className="text-lg text-gray-700 mb-4">
+          Thank you for visiting our blog. We hope you find our posts helpful and inspiring. If you have any questions or suggestions, feel free to reach out to us through our Contact page. We would love to hear from you!
+        </p>
+      </div>
   );
 };
 
-export default ClientLayout;
+export default AboutPage;
