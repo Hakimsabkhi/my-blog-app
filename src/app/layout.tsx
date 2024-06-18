@@ -1,11 +1,19 @@
-import React from 'react';
-import '../styles/globals.css'; // Ensure global styles are imported
+"use client";
 
-const RootLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+import '../styles/globals.css'; // Ensure global styles are imported
+import { SessionProvider } from 'next-auth/react';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
+
+const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <html lang="en" className="h-full bg-gray-100">
-      <body className="h-full">
-        {children}
+    <html lang="en">
+      <body>
+        <SessionProvider>
+          <Header />
+          <main>{children}</main>
+          <Footer />
+        </SessionProvider>
       </body>
     </html>
   );

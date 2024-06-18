@@ -6,28 +6,14 @@ if (!MONGODB_URI) {
   throw new Error('Please define the MONGODB_URI environment variable inside .env.local');
 }
 
-interface MongooseCache {
-  conn: typeof mongoose | null;
-  promise: Promise<typeof mongoose> | null;
-}
-
-declare global {
-  namespace NodeJS {
-    interface Global {
-      mongoose: MongooseCache;
-    }
-  }
-}
-
-const globalWithMongoose = global as typeof global & { mongoose: MongooseCache };
-
-let cached = globalWithMongoose.mongoose;
+// Global cache to avoid multiple connections
+let cached = (global as any).mongoose;
 
 if (!cached) {
-  cached = globalWithMongoose.mongoose = { conn: null, promise: null };
+  cached = (global as any).mongoose = { conn: null, promise: null };
 }
 
-async function dbConnect() {
+async function connectToDatabase() {
   if (cached.conn) {
     return cached.conn;
   }
@@ -37,8 +23,6 @@ async function dbConnect() {
       bufferCommands: false,
     };
 
-    mongoose.set('strictQuery', false); // Add this line
-
     cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
       return mongoose;
     });
@@ -47,4 +31,4 @@ async function dbConnect() {
   return cached.conn;
 }
 
-export default dbConnect;
+export default connectToDatabase;

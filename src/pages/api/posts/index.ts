@@ -9,21 +9,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     case 'GET':
       try {
         const posts = await Post.find({});
-        res.status(200).json({ success: true, data: posts });
+        res.status(200).json({ success: true, posts });
       } catch (error) {
-        res.status(400).json({ success: false });
-      }
-      break;
-    case 'POST':
-      try {
-        const post = await Post.create(req.body);
-        res.status(201).json({ success: true, data: post });
-      } catch (error) {
-        res.status(400).json({ success: false });
+        const errorMessage = (error as Error).message;
+        res.status(400).json({ success: false, error: errorMessage });
       }
       break;
     default:
-      res.status(400).json({ success: false });
+      res.status(400).json({ success: false, error: 'Method not allowed' });
       break;
   }
 }
